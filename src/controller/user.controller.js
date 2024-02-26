@@ -6,11 +6,11 @@ export class UsersController {
     //회원가입//
     signUp = async (req, res, next) => {
       try {
-        const { email, password, repassword, name } = req.body;
+        const { email, password, passwordConfirm, name } = req.body;
         const result = await this.usersService.signUp(
           email,
           password,
-          repassword,
+          passwordConfirm,
           name
         );
         res.status(result.status).json(result.data);

@@ -9,7 +9,7 @@ export class UsersService {
   }
 
   //회원가입//
-  signUp = async (email, password, repassword, name) => {
+  signUp = async (email, password, passwordConfirm, name) => {
     try {
       const isExistUser = await this.usersRepository.getUserByEmail(email);
       if (isExistUser) {
@@ -24,7 +24,7 @@ export class UsersService {
           data: { message: "비밀번호는 6자리 이상을 입력해주세요" },
         };
       }
-      if (password !== repassword) {
+      if (password !== passwordConfirm) {
         return {
           status: 400,
           data: { message: "비밀번호가 일치하지 않습니다" },
