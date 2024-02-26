@@ -35,7 +35,7 @@ export class UsersService {
       const user = await this.usersRepository.signUp(
         email,
         hashedPassword,
-        name
+        name,
       );
 
       return {
@@ -54,13 +54,23 @@ export class UsersService {
     const accessToken = jwt.sign(
       { userId: user.userId },
       process.env.ACCESS_SecretKey,
-      { expiresIn: "12h" }
+      { expiresIn: "12h" },
     );
     const refreshToken = jwt.sign(
       { userId: user.userId },
       process.env.REFRESH_SecretKey,
-      { expiresIn: "7d" }
+      { expiresIn: "7d" },
     );
     return { accessToken, refreshToken };
+  };
+
+  // 로그아웃
+  signOut = async (userId) => {
+    try {
+      await this.usersRepository.deleteRefreshToken(userId);
+      return { message: "로그아웃 성공" };
+    } catch (err) {
+      throw new Error(err.message);
+    }
   };
 }
