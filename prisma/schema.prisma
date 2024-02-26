@@ -14,72 +14,84 @@ datasource db {
 }
 
 model Users {
-  userId Int @id @default(autoincrement()) @map("userId")
-  email String @unique @map("email")
-  password String @map("password")
-  name String @map("name")
+  userId    Int      @id @default(autoincrement()) @map("userId")
+  email     String   @unique @map("email")
+  password  String   @map("password")
+  name      String   @map("name")
   createdAt DateTime @default(now()) @map("createdAt")
   updatedAt DateTime @updatedAt @map("updatedAt")
 
-  reservation Reservation[]
-  review Review[]
+  reservation   Reservation[]
+  review        Review[]
+  refreshTokens RefreshTokens[]
 
   @@map("Users")
 }
 
 model Petsitter {
-  sitterId Int @id @default(autoincrement()) @map("sitterId")
-  name String @map("name")
-  career Int @map("career")
-  region String @map("region")
+  sitterId Int    @id @default(autoincrement()) @map("sitterId")
+  name     String @map("name")
+  career   Int    @map("career")
+  region   String @map("region")
 
   reservation Reservation[]
-  review Review[]
+  review      Review[]
 
   @@map("Petsitter")
 }
 
 model Reservation {
-  postId Int @id @default(autoincrement()) @map("postId")
-  userId Int @map("userId")
-  sitterId Int @map("sitterId")
+  postId      Int    @id @default(autoincrement()) @map("postId")
+  userId      Int    @map("userId")
+  sitterId    Int    @map("sitterId")
   reservation String @map("reservation")
-  petName String @map("petName")
-  petType Type @map("petType")
-  request String @db.Text @map("request")
+  petName     String @map("petName")
+  petType     Type   @map("petType")
+  request     String @map("request") @db.Text
 
-  user Users @relation(fields: [userId], references: [userId], onDelete: Cascade)
+  user      Users     @relation(fields: [userId], references: [userId], onDelete: Cascade)
   petsitter Petsitter @relation(fields: [sitterId], references: [sitterId], onDelete: Cascade)
 
   @@map("Reservation")
 }
 
 enum Type {
-  small 
+  small
   middle
   large
 }
 
 model Review {
-  reviewId Int @id @default(autoincrement()) @map("reviewId")
-  userId Int @map("userId")
-  sitterId Int @map("sitterId")
-  title String @map("title")
-  rating Int @map("rating")
-  content String @db.Text @map("content")
-  image String? @map("image")
+  reviewId  Int      @id @default(autoincrement()) @map("reviewId")
+  userId    Int      @map("userId")
+  sitterId  Int      @map("sitterId")
+  title     String   @map("title")
+  rating    Int      @map("rating")
+  content   String   @map("content") @db.Text
+  image     String?  @map("image")
   createdAt DateTime @default(now()) @map("createdAt")
   updatedAt DateTime @updatedAt @map("updatedAt")
 
-  user Users @relation(fields: [userId], references: [userId], onDelete: Cascade)
+  user      Users     @relation(fields: [userId], references: [userId], onDelete: Cascade)
   petsitter Petsitter @relation(fields: [sitterId], references: [sitterId], onDelete: Cascade)
 
   @@map("Review")
 }
 
 model DateInfo {
-  dateId Int @id @default(autoincrement()) @map("dateId")
-  date String @unique @map("date")
+  dateId Int    @id @default(autoincrement()) @map("dateId")
+  date   String @unique @map("date")
 
   @@map("DateInfo")
+}
+
+model RefreshTokens {
+  tokenId   Int      @id @default(autoincrement()) @map("sitterId") // 리프레시 토큰의 고유 식별자로, 자동으로 증가하는 정수.
+  userId    Int      @map("userId")
+  token     String   @map("token") // 리프레시 토큰 자체를 나타냅니다.
+  createdAt DateTime @default(now()) @map("createdAt") // 리프레시 토큰이 생성된 날짜 및 시간을 나타냅니다.
+
+  user Users @relation(fields: [userId], references: [userId], onDelete: Cascade)
+
+  @@map("RefreshTokens")
 }
