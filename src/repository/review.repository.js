@@ -12,14 +12,13 @@ export class ReviewsRepository {
     }
 
     // 리뷰 작성
-    createReview = async (title, content, rating, image) => {
+    createReview = async (title, content, rating) => {
 
         const review = await this.prisma.Reviews.create({
             data: {
                 title: title,
                 content: content,
                 rating: rating,
-                image: image
             }
         });
         return review;

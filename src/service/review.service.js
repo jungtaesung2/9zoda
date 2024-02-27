@@ -15,7 +15,6 @@ export class ReviewsService {
         if (!sitter) {
             throw new Error('해당하는 시터가 없습니다')
         }
-
         return sitter;
     }
 
