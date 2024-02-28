@@ -51,6 +51,17 @@ export class UsersService {
   signIn = async (email, password) => {
     const user = await this.usersRepository.getUserByEmail(email);
 
+    // 사용자가 없는 경우
+    if (!user) {
+      throw new Error("존재하지 않는 이메일입니다.");
+    }
+    // 비밀번호를 확인합니다.
+    const isPasswordValid = await bcrypt.compare(password, user.password);
+    if (!isPasswordValid) {
+      // 비밀번호가 일치하지 않는 경우
+      throw new Error("비밀번호가 일치하지 않습니다.");
+    }
+
     const accessToken = jwt.sign(
       { userId: user.userId },
       process.env.ACCESS_SecretKey,

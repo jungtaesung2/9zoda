@@ -15,10 +15,10 @@ export class UsersRepository {
   };
 
   //로그인//
-  async signIn(email, password) {
-    const result = await this.usersRepository.signIn(email, password);
-    return result;
-  }
+  signIn = async (email, password) => {
+    const user = await this.usersRepository.signIn(email, password);
+    return user;
+  };
   getUserByEmail = async (email) => {
     const user = await this.prisma.users.findFirst({
       where: { email },

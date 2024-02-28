@@ -16,8 +16,8 @@ describe("UsersService", () => {
   });
 
   describe("signUp", () => {
-    it("이미 존재하는 이메일이면 충돌 상태와 메시지를 반환해야 합니다.", async () => {
-      mockUsersRepository.getUserByEmail.mockResolvedValueOnce({});
+    it("이미 존재하는 이메일인 경우 충돌 상태와 메시지를 반환해야 합니다.", async () => {
+      mockUsersRepository.getUserByEmail.mockResolvedValueOnce({}); // 이미 존재하는 이메일
 
       const result = await usersService.signUp(
         "test@example.com",
@@ -32,7 +32,7 @@ describe("UsersService", () => {
       });
     });
 
-    it("비밀번호가 6자리 이상이 아니면 잘못된 요청 상태와 메시지를 반환해야 합니다.", async () => {
+    it("비밀번호가 6자리 이상이 아닌 경우 잘못된 요청 상태와 메시지를 반환해야 합니다.", async () => {
       const result = await usersService.signUp(
         "test@example.com",
         "pass",
@@ -46,7 +46,7 @@ describe("UsersService", () => {
       });
     });
 
-    it("비밀번호와 비밀번호 확인이 일치하지 않으면 잘못된 요청 상태와 메시지를 반환해야 합니다.", async () => {
+    it("비밀번호와 비밀번호 확인이 일치하지 않는 경우 잘못된 요청 상태와 메시지를 반환해야 합니다.", async () => {
       const result = await usersService.signUp(
         "test@example.com",
         "password",
@@ -84,9 +84,28 @@ describe("UsersService", () => {
   });
 
   describe("signIn", () => {
-    it("로그인에 성공하면 액세스 토큰 및 리프레시 토큰을 반환해야 합니다.", async () => {
-      const mockUser = { userId: 1 };
+    it("사용자가 없는 경우 에러를 던져야 합니다.", async () => {
+      mockUsersRepository.getUserByEmail.mockResolvedValueOnce(null);
+
+      await expect(
+        usersService.signIn("nonexistent@example.com", "password"),
+      ).rejects.toThrow("존재하지 않는 이메일입니다.");
+    });
+
+    it("비밀번호가 일치하지 않는 경우 에러를 던져야 합니다.", async () => {
+      const mockUser = { userId: 1, password: "hashedPassword" };
       mockUsersRepository.getUserByEmail.mockResolvedValueOnce(mockUser);
+      bcrypt.compare.mockReturnValueOnce(false);
+
+      await expect(
+        usersService.signIn("test@example.com", "wrongPassword"),
+      ).rejects.toThrow("비밀번호가 일치하지 않습니다.");
+    });
+
+    it("로그인에 성공하면 액세스 토큰 및 리프레시 토큰을 반환해야 합니다.", async () => {
+      const mockUser = { userId: 1, password: "hashedPassword" };
+      mockUsersRepository.getUserByEmail.mockResolvedValueOnce(mockUser);
+      bcrypt.compare.mockReturnValueOnce(true);
       jwt.sign.mockReturnValueOnce("fakeAccessToken");
       jwt.sign.mockReturnValueOnce("fakeRefreshToken");
 
@@ -109,6 +128,17 @@ describe("UsersService", () => {
       const result = await usersService.signOut(userId);
 
       expect(result).toEqual({ message: "로그아웃 성공" });
+    });
+
+    it("로그아웃에 실패하면 에러를 던져야 합니다.", async () => {
+      const userId = 1;
+      mockUsersRepository.deleteRefreshToken.mockRejectedValueOnce(
+        new Error("리프레시 토큰 삭제 실패"),
+      );
+
+      await expect(usersService.signOut(userId)).rejects.toThrow(
+        "리프레시 토큰 삭제 실패",
+      );
     });
   });
 });

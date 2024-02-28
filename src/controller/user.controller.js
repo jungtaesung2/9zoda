@@ -22,6 +22,7 @@ export class UsersController {
   //로그인//
   signIn = async (req, res, next) => {
     const { email, password } = req.body;
+    console.log(req.body);
     const tokens = await this.usersService.signIn(email, password);
 
     res.cookie("authorization", `Bearer ${tokens.accessToken}`);
