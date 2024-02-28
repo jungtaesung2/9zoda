@@ -6,7 +6,9 @@ export class ReviewsRepository {
     // 시터 아이디 찾기
     findSitter = async (sitterId) => {
         const sitter = await this.prisma.Petsitter.findFirst({
-            where: { sitterId }
+            where: {
+                sitterId: +sitterId
+            }
         });
         return sitter;
     }
@@ -14,7 +16,10 @@ export class ReviewsRepository {
     // 예약 확인
     checkReservation = async (sitterId, userId) => {
         const reservation = await this.prisma.Reservation.findFirst({
-            where: { sitterId, userId }
+            where: {
+                sitterId: +sitterId,
+                userId: +userId
+            }
         });
         return reservation;
     }
@@ -36,7 +41,7 @@ export class ReviewsRepository {
     findReview = async (sitterId) => {
         const reviews = await this.prisma.Reviews.findMany({
             where: {
-                sitterId
+                sitterId: +sitterId
             },
             orderBy: {
                 createdAt: 'desc'
@@ -49,8 +54,8 @@ export class ReviewsRepository {
     changeReview = async (userId, reviewId, title, content, rating) => {
         const changeReview = await this.prisma.Reviews.update({
             where: {
-                reviewId,
-                userId,
+                reviewId: +reviewId,
+                userId: +userId,
             },
             data: {
                 title,
@@ -65,8 +70,8 @@ export class ReviewsRepository {
     deleteReview = async (reviewId, userId) => {
         const deleteReview = await this.prisma.Reviews.delete({
             where: {
-                reviewId,
-                userId
+                reviewId: +reviewId,
+                userId: +userId
             }
         });
         return deleteReview;

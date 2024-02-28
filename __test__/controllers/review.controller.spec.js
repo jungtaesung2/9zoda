@@ -69,6 +69,7 @@ describe('review Controller Unit test', () => {
     
 
     test('createReview Method', async () => {
+        // 가짜로 만든 mockPrisma.Reservation.findFirst 를 실행했을 때의 결과가 reservation라고 만들어주었다.
         const mockfindSitter = mockReviewService.findSitter.mockResolvedValue();
         const mockfindReview = mockReviewService.checkReservation.mockResolvedValue(findSitter);
         const mockcreateReview = mockReviewService.createReview.mockResolvedValue(checkReservation);

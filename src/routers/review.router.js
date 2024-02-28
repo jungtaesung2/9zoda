@@ -1,5 +1,5 @@
 import express from 'express';
-import { prisma } from '../models/index.js';
+import { prisma } from '../utils/prisma/index.js';
 import { ReviewsController } from '../controller/review.controller.js';
 import { ReviewsService } from '../service/review.service.js';
 import { ReviewsRepository } from '../repository/review.repository.js';
