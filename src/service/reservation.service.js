@@ -16,6 +16,10 @@ class ReservationService {
     if (resInfo) {
       throw new Error("이미 예약된 날짜입니다.");
     }
+    // petType 유효성 검사
+    if (!["small", "middle", "large"].includes(petType)) {
+      throw new Error("올바른 반려동물 유형을 선택해주세요.");
+    }
 
     await ReservationRepository.createReservation(
       userId,
@@ -51,6 +55,11 @@ class ReservationService {
     const resInfo = await ReservationRepository.findReservationByDate(date);
     if (resInfo) {
       throw new Error("이미 예약된 날짜입니다.");
+    }
+
+    // petType 유효성 검사
+    if (!["small", "middle", "large"].includes(petType)) {
+      throw new Error("올바른 반려동물 유형을 선택해주세요.");
     }
 
     await ReservationRepository.updateReservation(
