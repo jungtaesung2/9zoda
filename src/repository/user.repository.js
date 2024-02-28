@@ -25,7 +25,13 @@ export class UsersRepository {
     });
     return user;
   };
-
+  // 사용자 조회
+  // getUserById = async (userId) => {
+  //   const user = await this.prisma.users.findUnique({
+  //     where: { userId },
+  //   });
+  //   return user;
+  // };
   // 로그아웃 (리프레시 토큰 삭제)
   signOut = async (userId) => {
     try {
