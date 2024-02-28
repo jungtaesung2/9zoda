@@ -29,7 +29,7 @@ export class ReviewsService {
     }
 
     // 리뷰 작성
-    createReview = async (title, content, rating) => {
+    createReview = async (userId, sitterId, title, content, rating) => {
 
         if (!title) {
             throw new Error('제목을 입력하셔야하옵니다.');
@@ -40,6 +40,8 @@ export class ReviewsService {
         }
 
         const createReview = await this.reviewsRepository.createReview(
+            userId,
+            sitterId
             title,
             content,
             rating,

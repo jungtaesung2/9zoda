@@ -19,7 +19,7 @@ describe('review Controller Unit test', () => {
             deleteReview: jest.fn()
         };
 
-        mockReq = { params: {}, body: {} };
+        mockReq = { params: {}, body: {}, user: {}};
         mockRes = {
             status: jest.fn().mockReturnThis(),
             json: jest.fn().mockReturnThis(),
@@ -66,17 +66,37 @@ describe('review Controller Unit test', () => {
         career: '2개월',
         region: '천안'
     };
-    
+    const reservation = {
+        postId: 1,
+        userId: 1,
+        sitterId: 1,
+        reservation: '2월 14일',
+        petName: '예삐',
+        petType: '불독',
+        request: '이쁘게봐주세요'
+    }
 
     test('createReview Method', async () => {
         // 가짜로 만든 mockPrisma.Reservation.findFirst 를 실행했을 때의 결과가 reservation라고 만들어주었다.
-        const mockfindSitter = mockReviewService.findSitter.mockResolvedValue();
-        const mockfindReview = mockReviewService.checkReservation.mockResolvedValue(findSitter);
-        const mockcreateReview = mockReviewService.createReview.mockResolvedValue(checkReservation);
-        
-        
+        const mockfindSitter = mockReviewService.findSitter.mockResolvedValue(sitter);
+        const mockfindReview = mockReviewService.checkReservation.mockResolvedValue(reservation);
+        const mockcreateReview = mockReviewService.createReview.mockResolvedValue(review);
 
-        
+        const createReview = await reviewsRepository.createReview(
+            review.userId,
+            review.sitterId,
+            review.title,
+            review.content,
+            review.rating
+        );
+        expect(createReview).toEqual(review);
+        expect(mockcreate).toHaveBeenCalledWith({
+            userId: review.userId, 
+            sitterId: review.sitterId,    
+            title: review.title,
+            content: review.content,
+            rating: review.rating,
+        });
     });
 
 
