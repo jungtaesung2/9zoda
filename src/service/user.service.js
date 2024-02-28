@@ -84,4 +84,33 @@ export class UsersService {
       throw new Error(err.message);
     }
   };
+  // 유저 프로필 조회
+  findUserProfiles = async (userId) => {
+    const user = await this.usersRepository.findUserProfiles(userId);
+    return {
+      userId: user.userId,
+      email: user.email,
+      name: user.name,
+      reservations: user.reservation, // 예약 내역 추가
+    };
+  };
+
+  // 유저 프로필 수정
+  updateUserProfile = async (userId, name) => {
+    console.log(userId, name); // 로깅 코드 수정
+    if (!name || name.trim() === "") {
+      throw new Error("이름을 입력하세요.");
+    }
+
+    const updateUser = await this.usersRepository.updateUserProfiles(
+      userId,
+      name,
+    );
+
+    return {
+      name: updateUser.name,
+    };
+  };
 }
+
+export default UsersService;

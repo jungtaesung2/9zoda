@@ -1,4 +1,11 @@
+import UsersService from "../service/user.service.js";
+import UsersRepository from "../repository/user.repository.js";
 import ReservationService from "../service/reservation.service.js";
+
+const usersRepository = new UsersRepository();
+const usersService = new UsersService(usersRepository);
+
+const reservationService = new ReservationService();
 
 class ReservationController {
   static async createReservation(req, res, next) {
@@ -6,7 +13,7 @@ class ReservationController {
       const { sitterId, reservation, petName, petType, request } = req.body;
       const { userId } = req.user;
 
-      await ReservationService.createReservation(
+      await reservationService.createReservation(
         userId,
         sitterId,
         reservation,
@@ -24,7 +31,7 @@ class ReservationController {
   static async getReservations(req, res, next) {
     try {
       const { userId } = req.user;
-      const reservations = await ReservationService.getReservations(userId);
+      const reservations = await reservationService.getReservations(userId);
 
       return res.status(200).json({ reservations });
     } catch (error) {
@@ -37,7 +44,7 @@ class ReservationController {
       const { postId } = req.params;
       const { sitterId, reservation, petName, petType, request } = req.body;
 
-      await ReservationService.updateReservation(
+      await reservationService.updateReservation(
         postId,
         sitterId,
         reservation,
@@ -55,7 +62,7 @@ class ReservationController {
   static async deleteReservation(req, res, next) {
     try {
       const { postId } = req.params;
-      await ReservationService.deleteReservation(postId);
+      await reservationService.deleteReservation(postId);
 
       return res.status(200).json({ message: "예약 취소되었습니다." });
     } catch (error) {

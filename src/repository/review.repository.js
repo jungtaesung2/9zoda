@@ -40,7 +40,7 @@ export class ReviewsRepository {
 
   // 리뷰 조회
   findReview = async (sitterId) => {
-    const reviews = await this.prisma.Reviews.findMany({
+    const reviews = await this.prisma.Review.findMany({
       where: {
         sitterId: +sitterId,
       },
@@ -52,11 +52,12 @@ export class ReviewsRepository {
   };
 
   // 리뷰 수정
-  changeReview = async (userId, reviewId, title, content, rating) => {
-    const changeReview = await this.prisma.Reviews.update({
+  changeReview = async (userId, sitterId, reviewId, title, content, rating) => {
+    const changeReview = await this.prisma.Review.update({
       where: {
         reviewId: +reviewId,
         userId: +userId,
+        sitterId: +sitterId, // 여기에 sitterId를 추가했습니다.
       },
       data: {
         title,
@@ -69,7 +70,7 @@ export class ReviewsRepository {
 
   // 리뷰 삭제
   deleteReview = async (reviewId, userId) => {
-    const deleteReview = await this.prisma.Reviews.delete({
+    const deleteReview = await this.prisma.Review.delete({
       where: {
         reviewId: +reviewId,
         userId: +userId,

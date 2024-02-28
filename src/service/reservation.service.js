@@ -1,7 +1,7 @@
 import ReservationRepository from "../repository/reservation.repository.js";
 
 class ReservationService {
-  static async createReservation(
+  async createReservation(
     userId,
     sitterId,
     reservation,
@@ -16,7 +16,7 @@ class ReservationService {
     if (resInfo) {
       throw new Error("이미 예약된 날짜입니다.");
     }
-    // petType 유효성 검사
+
     if (!["small", "middle", "large"].includes(petType)) {
       throw new Error("올바른 반려동물 유형을 선택해주세요.");
     }
@@ -32,7 +32,7 @@ class ReservationService {
     );
   }
 
-  static async getReservations(userId) {
+  async getReservations(userId) {
     const reservations =
       await ReservationRepository.findReservationsByUserId(userId);
     if (!reservations.length) {
@@ -41,7 +41,7 @@ class ReservationService {
     return reservations;
   }
 
-  static async updateReservation(
+  async updateReservation(
     postId,
     sitterId,
     reservation,
@@ -57,7 +57,6 @@ class ReservationService {
       throw new Error("이미 예약된 날짜입니다.");
     }
 
-    // petType 유효성 검사
     if (!["small", "middle", "large"].includes(petType)) {
       throw new Error("올바른 반려동물 유형을 선택해주세요.");
     }
@@ -73,7 +72,7 @@ class ReservationService {
     );
   }
 
-  static async deleteReservation(postId) {
+  async deleteReservation(postId) {
     await ReservationRepository.deleteReservation(postId);
   }
 }

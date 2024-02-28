@@ -1,33 +1,19 @@
 import express from "express";
-import { prisma } from "../utils/prisma/index.js";
+import { PrismaClient } from "@prisma/client";
+import { PetsitterController } from "../controller/petsitters.controller.js";
+import { PetsitterService } from "../service/petsitters.service.js";
+import { PetsitterRepository } from "../repository/petsitters.repository.js";
 
+const prisma = new PrismaClient();
 const router = express.Router();
+const petsitterRepository = new PetsitterRepository(prisma);
+const petsitterService = new PetsitterService(petsitterRepository);
+const petsitterController = new PetsitterController(petsitterService);
 
-router.get("/petsitter", async (req, res, next) => {
-  const sitter = await prisma.petsitter.findMany({
-    select: {
-      sitterId: true,
-      name: true,
-    },
-  });
+// 펫시터 프로필 조회
+router.get("/petsitters", petsitterController.getPetsitters);
 
-  return res.status(201).json({ data: sitter });
-});
-
-router.get("/petsitter/:sitterId", async (req, res, next) => {
-  const { sitterId } = req.params;
-
-  const sitter = await prisma.petsitter.findFirst({
-    where: { sitterId: +sitterId },
-    select: {
-      sitterId: true,
-      name: true,
-      career: true,
-      region: true,
-    },
-  });
-
-  return res.status(201).json({ data: sitter });
-});
+// 펫시터 상세조회
+router.get("/petsitters/:petsitterId", petsitterController.getPetsittersById);
 
 export default router;

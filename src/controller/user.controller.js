@@ -21,14 +21,19 @@ export class UsersController {
 
   //로그인//
   signIn = async (req, res, next) => {
-    const { email, password } = req.body;
-    console.log(req.body);
-    const tokens = await this.usersService.signIn(email, password);
+    try {
+      const { email, password } = req.body;
+      console.log(req.body);
+      const tokens = await this.usersService.signIn(email, password);
 
-    res.cookie("authorization", `Bearer ${tokens.accessToken}`);
-    res.cookie("refreshToken", tokens.refreshToken);
+      res.cookie("authorization", `Bearer ${tokens.accessToken}`);
+      res.cookie("refreshToken", tokens.refreshToken);
 
-    return res.status(200).json({ message: "로그인 완료" });
+      return res.status(200).json({ message: "로그인 완료" });
+    } catch (err) {
+      console.error(err);
+      res.status(400).json({ error: err.message });
+    }
   };
 
   // 로그아웃
@@ -45,18 +50,45 @@ export class UsersController {
       res.status(500).json({ message: err.message });
     }
   };
+  // 유저 프로필 조회
+  findUserProfiles = async (req, res, next) => {
+    try {
+      const userId = req.user.userId; // 미들웨어에서 저장한 사용자 정보를 가져옴
 
-  // 사용자 조회
-  //   getUserById = async (req, res, next) => {
-  //     try {
-  //       const { userId } = req.params;
-  //       const user = await this.usersService.getUserById(userId);
-  //       if (!user) {
-  //         return res.status(404).json({ message: "사용자를 찾을 수 없습니다." });
-  //       }
-  //       return res.status(200).json(user);
-  //     } catch (err) {
-  //       return res.status(500).json({ message: err.message });
-  //     }
-  //   };
+      const findUserProfiles = await this.usersService.findUserProfiles(userId);
+
+      return res.status(200).json({ data: findUserProfiles });
+    } catch (err) {
+      next(err);
+    }
+  };
+
+  // 유저 프로필 수정
+  updateUserProfiles = async (req, res, next) => {
+    try {
+      const userId = req.user.userId; // userId 값을 req.user에서 추출
+      const { name } = req.body;
+      const updateUserProfiles = await this.usersService.updateUserProfile(
+        userId,
+        name,
+      );
+
+      return res.status(201).json({ data: updateUserProfiles });
+    } catch (err) {
+      next(err);
+    }
+  };
 }
+// 사용자 조회
+//   getUserById = async (req, res, next) => {
+//     try {
+//       const { userId } = req.params;
+//       const user = await this.usersService.getUserById(userId);
+//       if (!user) {
+//         return res.status(404).json({ message: "사용자를 찾을 수 없습니다." });
+//       }
+//       return res.status(200).json(user);
+//     } catch (err) {
+//       return res.status(500).json({ message: err.message });
+//     }
+//   };
