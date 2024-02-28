@@ -84,4 +84,35 @@ export class UsersService {
       throw new Error(err.message);
     }
   };
+  //사용자 조회(상세조회)
+  getUserById = async (userId) => {
+    try {
+      const user = await this.usersRepository.getUserById(userId);
+      return {
+        userId: user.userId,
+        name: user.name,
+        email: user.email,
+        createdAt: user.createdAt,
+      };
+    } catch (error) {
+      throw new Error("사용자 정보를 조회할 수 없습니다.");
+    }
+  };
+  //모든 사용자 조회//
+  getAllUserById = async () => {
+    const user = await this.usersRepository.getAllUserById();
+    //가장 최신 사용자부터 정렬.
+    user.sort((a, b) => {
+      return b.createdAt - a.createdAt;
+    });
+    //로직 이후 사용자에게 보여줄 데이터.
+    return user.map((user) => {
+      return {
+        usersId: user.userId,
+        name: user.name,
+        email: user.email,
+        createdAt: user.createdAt,
+      };
+    });
+  };
 }

@@ -9,6 +9,8 @@ describe("UsersRepository", () => {
       users: {
         create: jest.fn(),
         findFirst: jest.fn(),
+        findUnique: jest.fn(),
+        findMany: jest.fn(),
       },
       refreshTokens: {
         deleteMany: jest.fn(),
@@ -63,6 +65,56 @@ describe("UsersRepository", () => {
       expect(usersRepository.prisma.users.findFirst).toHaveBeenCalledWith({
         where: { email },
       });
+    });
+  });
+
+  describe("getUserById", () => {
+    it("사용자 ID로 사용자 정보를 조회해야 합니다.", async () => {
+      const userId = 1;
+      const mockUser = {
+        id: userId,
+        email: "test@example.com",
+        name: "Test User",
+      };
+      usersRepository.prisma.users.findUnique.mockResolvedValueOnce(mockUser);
+
+      const result = await usersRepository.getUserById(userId);
+
+      expect(result).toEqual(mockUser);
+      expect(usersRepository.prisma.users.findUnique).toHaveBeenCalledWith({
+        where: { userId: userId },
+      });
+    });
+
+    it("사용자를 찾을 수 없는 경우 null을 반환해야 합니다.", async () => {
+      const userId = 1;
+      usersRepository.prisma.users.findUnique.mockResolvedValueOnce(null);
+
+      const result = await usersRepository.getUserById(userId);
+
+      expect(result).toBeNull();
+    });
+  });
+
+  describe("getAllUserById", () => {
+    it("모든 사용자를 조회한 후 데이터를 반환해야 합니다.", async () => {
+      const mockUsers = [
+        { id: 1, email: "user1@example.com", name: "User 1" },
+        { id: 2, email: "user2@example.com", name: "User 2" },
+      ];
+      usersRepository.prisma.users.findMany.mockResolvedValueOnce(mockUsers);
+
+      const result = await usersRepository.getAllUserById();
+
+      expect(result).toEqual(mockUsers);
+    });
+
+    it("사용자가 없는 경우 빈 배열을 반환해야 합니다.", async () => {
+      usersRepository.prisma.users.findMany.mockResolvedValueOnce([]);
+
+      const result = await usersRepository.getAllUserById();
+
+      expect(result).toEqual([]);
     });
   });
 

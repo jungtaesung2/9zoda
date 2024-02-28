@@ -10,9 +10,81 @@ describe("UsersService", () => {
       getUserByEmail: jest.fn(),
       signUp: jest.fn(),
       deleteRefreshToken: jest.fn(),
+      getUserById: jest.fn(),
+      getAllUserById: jest.fn(),
     };
 
     usersService = new UsersService(mockUsersRepository);
+  });
+
+  describe("getUserById", () => {
+    it("사용자를 찾을 수 없는 경우 에러를 던져야 합니다.", async () => {
+      const userId = 1;
+      mockUsersRepository.getUserById.mockResolvedValueOnce(null);
+
+      await expect(usersService.getUserById(userId)).rejects.toThrow(
+        "사용자 정보를 조회할 수 없습니다.",
+      );
+    });
+
+    it("사용자를 찾은 경우 사용자 정보를 반환해야 합니다.", async () => {
+      const userId = 1;
+      const mockUser = {
+        userId: userId,
+        name: "Test User",
+        email: "test@example.com",
+        createdAt: new Date(),
+      };
+      mockUsersRepository.getUserById.mockResolvedValueOnce(mockUser);
+
+      const result = await usersService.getUserById(userId);
+
+      expect(result).toEqual({
+        userId: mockUser.userId,
+        name: mockUser.name,
+        email: mockUser.email,
+        createdAt: mockUser.createdAt,
+      });
+    });
+  });
+
+  describe("getAllUserById", () => {
+    it("모든 사용자를 조회한 후 데이터를 반환해야 합니다.", async () => {
+      const mockUsers = [
+        {
+          userId: 1,
+          name: "User 1",
+          email: "user1@example.com",
+          createdAt: new Date(),
+        },
+        {
+          userId: 2,
+          name: "User 2",
+          email: "user2@example.com",
+          createdAt: new Date(),
+        },
+      ];
+      mockUsersRepository.getAllUserById.mockResolvedValueOnce(mockUsers);
+
+      const result = await usersService.getAllUserById();
+
+      expect(result).toEqual(
+        mockUsers.map((user) => ({
+          userId: user.userId,
+          name: user.name,
+          email: user.email,
+          createdAt: user.createdAt,
+        })),
+      );
+    });
+
+    it("사용자가 없는 경우 빈 배열을 반환해야 합니다.", async () => {
+      mockUsersRepository.getAllUserById.mockResolvedValueOnce([]);
+
+      const result = await usersService.getAllUserById();
+
+      expect(result).toEqual([]);
+    });
   });
 
   describe("signUp", () => {

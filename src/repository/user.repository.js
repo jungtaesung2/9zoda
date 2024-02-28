@@ -10,8 +10,7 @@ export class UsersRepository {
     const user = await this.prisma.users.create({
       data: { email, password: hashedPassword, name },
     });
-
-    return user;
+    return { message: "회원가입 완료" };
   };
 
   //로그인//
@@ -26,12 +25,18 @@ export class UsersRepository {
     return user;
   };
   // 사용자 조회
-  // getUserById = async (userId) => {
-  //   const user = await this.prisma.users.findUnique({
-  //     where: { userId },
-  //   });
-  //   return user;
-  // };
+  getUserById = async (userId) => {
+    const user = await this.prisma.users.findUnique({
+      where: { userId: +userId },
+    });
+    return user;
+  };
+  //모든 사용자 조회
+  getAllUserById = async () => {
+    const user = await this.prisma.users.findMany();
+
+    return user;
+  };
   // 로그아웃 (리프레시 토큰 삭제)
   signOut = async (userId) => {
     try {

@@ -47,16 +47,23 @@ export class UsersController {
   };
 
   // 사용자 조회
-  //   getUserById = async (req, res, next) => {
-  //     try {
-  //       const { userId } = req.params;
-  //       const user = await this.usersService.getUserById(userId);
-  //       if (!user) {
-  //         return res.status(404).json({ message: "사용자를 찾을 수 없습니다." });
-  //       }
-  //       return res.status(200).json(user);
-  //     } catch (err) {
-  //       return res.status(500).json({ message: err.message });
-  //     }
-  //   };
+  getUserById = async (req, res, next) => {
+    try {
+      const { userId } = req.params;
+      const user = await this.usersService.getUserById(userId);
+      if (!user) {
+        return res.status(404).json({ message: "사용자를 찾을 수 없습니다." });
+      }
+      return res.status(200).json({ data: user });
+    } catch (err) {
+      return res.status(500).json({ message: err.message });
+    }
+  };
+
+  //모든 사용자 조회
+  AllUserById = async (req, res, next) => {
+    const user = await this.usersService.getAllUserById();
+
+    return res.status(200).json({ data: user });
+  };
 }
