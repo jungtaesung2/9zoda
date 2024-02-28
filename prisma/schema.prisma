@@ -47,6 +47,7 @@ model Reservation {
   petName String @map("petName")
   petType Type @map("petType")
   request String @db.Text @map("request")
+  date String @unique @map("date")
 
   user Users @relation(fields: [userId], references: [userId], onDelete: Cascade)
   petsitter Petsitter @relation(fields: [sitterId], references: [sitterId], onDelete: Cascade)
