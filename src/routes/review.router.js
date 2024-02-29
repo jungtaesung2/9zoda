@@ -13,7 +13,7 @@ const reviewsController = new ReviewsController(reviewsService);
 // 리뷰 작성
 router.post("/:sitterId", authMiddleware, reviewsController.createReview);
 // 리뷰 조회
-router.get("/:reviewId", reviewsController.findReview);
+router.get("/:sitterId", reviewsController.findReview);
 // 리뷰 수정
 router.put("/:reviewId", authMiddleware, reviewsController.changeReview);
 // 리뷰 삭제

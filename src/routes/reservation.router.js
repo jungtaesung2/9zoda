@@ -1,28 +1,28 @@
 import express from "express";
 import authMiddleware from "../middlewares/auth.middleware.js";
-import reservationController from "../controller/reservation.controller.js";
+import {ReservationController} from "../controller/reservation.controller.js";
 
 const router = express.Router();
 
 router.post(
   "/reservation",
   authMiddleware,
-  reservationController.createReservation,
+  ReservationController.createReservation,
 );
 router.get(
   "/reservation",
   authMiddleware,
-  reservationController.getReservations,
+  ReservationController.getReservations,
 );
 router.put(
   "/reservation/:postId",
   authMiddleware,
-  reservationController.updateReservation,
+  ReservationController.updateReservation,
 );
 router.delete(
   "/reservation/:postId",
   authMiddleware,
-  reservationController.deleteReservation,
+  ReservationController.deleteReservation,
 );
 
 export default router;

@@ -1,7 +1,7 @@
 import express from "express";
 import cookieParser from "cookie-parser";
 import UsersRouter from "./routes/users.router.js";
-import ReservationRouter from "./routes/reservation.router.js";
+// import ReservationRouter from "./routes/reservation.router.js";
 import PetsitterRouter from "./routes/petsitter.router.js";
 import ReviewRouter from "./routers/review.router.js";
 
@@ -12,7 +12,7 @@ const PORT = 3018;
 app.use(express.json());
 app.use(cookieParser());
 
-app.use("/api", [UsersRouter, ReservationRouter, PetsitterRouter]);
+app.use("/api", [UsersRouter, PetsitterRouter]);
 app.use('/api/reviews', ReviewRouter);
 
 

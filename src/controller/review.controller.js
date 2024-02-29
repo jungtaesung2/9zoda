@@ -31,7 +31,7 @@ export class ReviewsController {
     findReview = async (req, res, next) => {
         try {
             const { sitterId } = req.params;
-
+            console.log(req.params);
             const findReview = await this.reviewsService.findReview(sitterId);
 
             return res.status(200).json({ data: findReview });
@@ -57,6 +57,7 @@ export class ReviewsController {
                 rating,
                 findReview.userId
             );
+            
 
             return res.status(201).json({ data: changeReview });
 
@@ -86,3 +87,9 @@ export class ReviewsController {
     }
 
 }
+
+
+
+
+
+
