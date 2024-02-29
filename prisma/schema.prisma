@@ -74,6 +74,7 @@ model Review {
 
   user Users @relation(fields: [userId], references: [userId], onDelete: Cascade)
   petsitter Petsitter @relation(fields: [sitterId], references: [sitterId], onDelete: Cascade)
+  petsitterId Int? @default(0)
 
   @@map("Review")
 }

@@ -18,7 +18,7 @@ export class PetsitterController {
     try {
       const { sitterId } = req.params;
       const petsitter =
-        await this.petsittersService.findPetsittersById(sitterId);
+        await this.petsittersService.getPetsittersById(sitterId); // 수정된 부분
 
       return res.status(200).json({ data: petsitter });
     } catch (err) {

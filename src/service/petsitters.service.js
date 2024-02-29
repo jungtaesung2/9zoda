@@ -1,11 +1,11 @@
 export class PetsitterService {
-  constructor(petsittersService) {
-    this.petsittersService = petsittersService;
+  constructor(petsitterRepository) {
+    this.petsitterRepository = petsitterRepository;
   }
 
   // 펫시터 조회
   getPetsitters = async () => {
-    const petsitters = await this.petsittersService.findAllpetsitters();
+    const petsitters = await this.petsitterRepository.getPetsitters();
     return petsitters.map((petsitter) => ({
       name: petsitter.name,
       region: petsitter.region,
@@ -13,15 +13,18 @@ export class PetsitterService {
   };
 
   //펫시터 상세조회
-  getPetsittersById = async (req, res, next) => {
+  //펫시터 상세조회
+  getPetsittersById = async (sitterId) => {
     try {
-      const { sitterId } = req.params;
       const petsitter =
-        await this.petsittersService.findPetsitterById(sitterId);
-
-      return res.status(200).json({ data: petsitter });
+        await this.petsitterRepository.getPetsittersById(sitterId);
+      return {
+        name: petsitter.name,
+        region: petsitter.region,
+        review: petsitter.review, // 리뷰 정보를 추가합니다.
+      };
     } catch (err) {
-      next(err);
+      throw err;
     }
   };
 }

@@ -13,14 +13,22 @@ export class PetsitterRepository {
   async getPetsittersById(sitterId) {
     const detailedPetsitter = await this.prisma.petsitter.findUnique({
       where: {
-        sitterId: sitterId,
+        sitterId: parseInt(sitterId), // sitterId를 정수로 변환합니다.
       },
       include: {
-        reviews: true,
-        contents: true,
-        careers: true,
-        images: true,
-        requests: true,
+        review: {
+          select: {
+            reviewId: true,
+            userId: true,
+            sitterId: true,
+            title: true,
+            rating: true,
+            content: true,
+            image: true,
+            createdAt: true,
+            updatedAt: true,
+          },
+        },
       },
     });
 

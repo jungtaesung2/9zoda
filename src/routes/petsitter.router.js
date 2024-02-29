@@ -14,6 +14,6 @@ const petsitterController = new PetsitterController(petsitterService);
 router.get("/petsitters", petsitterController.getPetsitters);
 
 // 펫시터 상세조회
-router.get("/petsitters/:petsitterId", petsitterController.getPetsittersById);
+router.get("/petsitters/:sitterId", petsitterController.getPetsittersById);
 
 export default router;
